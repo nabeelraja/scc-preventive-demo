@@ -1,0 +1,32 @@
+categories:
+- GCP
+createTime: '2024-06-20T06:40:45.470312090Z'
+description: Custom Guardrails for Google Cloud Storage Buckets.
+name: organizations/992456428025/locations/global/postures/custom_gcs_guardrails_v1
+policySets:
+- description: GCS Detective measures
+  policies:
+  - complianceStandards:
+    - control: SC-12
+      standard: NIST SP 800-53
+    - control: SC-13
+      standard: NIST SP 800-53
+    constraint:
+      securityHealthAnalyticsCustomModule:
+        config:
+          customOutput: {}
+          description: When enforced, this detector finds whether a storage bucket
+            is having Object Versioning enabled or not.
+          predicate:
+            expression: "!resource.versioning.enabled"
+          recommendation: Restore the SHA module. See https://cloud.google.com/security-command-center/docs/custom-modules-sha-overview.
+          resourceSelector:
+            resourceTypes:
+            - storage.googleapis.com/Bucket
+          severity: CRITICAL
+        displayName: gcsObjectVersioning
+        moduleEnablementState: ENABLED
+    policyId: Object Versioning is enabled
+  policySetId: Cloud storage detective policy set Basic
+revisionId: 4c86e313
+state: ACTIVE
