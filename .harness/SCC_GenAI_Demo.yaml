@@ -12,7 +12,7 @@ pipeline:
         build: <+input>
   stages:
     - stage:
-        name: Initialize
+        name: Preventive Workflow
         identifier: Checkout
         description: ""
         type: CI
@@ -46,93 +46,18 @@ pipeline:
                     image: hashicorp/terraform
                     shell: Sh
                     command: terraform init
+              - step:
+                  type: Run
+                  name: terraform plan
+                  identifier: terraform_plan
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: hashicorp/terraform
+                    shell: Sh
+                    command: |-
+                      terraform plan -out=main-plan
+                      terraform show -json main-plan > plan.json
+                      cat plan.json
           caching:
             enabled: false
             paths: []
-    - stage:
-        name: Terraform Plan
-        identifier: Terraform_Plan
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - step:
-                  type: ShellScript
-                  name: List all files
-                  identifier: List_all_files
-                  spec:
-                    shell: Bash
-                    executionTarget: {}
-                    source:
-                      type: Inline
-                      spec:
-                        script: ls -al
-                    environmentVariables: []
-                    outputVariables: []
-                  timeout: 10m
-              - step:
-                  type: Container
-                  name: TF Plan
-                  identifier: TF_Plan
-                  spec:
-                    connectorRef: account.harnessImage
-                    image: hashicorp/terraform
-                    command: terraform plan -out=main-plan
-                    shell: Sh
-                    infrastructure:
-                      type: KubernetesDirect
-                      spec:
-                        connectorRef: kubernetesclusterscc
-                        namespace: harness-delegate-ng
-                        resources:
-                          limits:
-                            cpu: "0.5"
-                            memory: 500Mi
-                        annotations: {}
-                        labels: {}
-                        containerSecurityContext:
-                          capabilities:
-                            drop: []
-                            add: []
-                        nodeSelector: {}
-                    reports:
-                      type: JUnit
-                      spec:
-                        paths: []
-                    outputVariables: []
-                    envVariables: {}
-                  timeout: 10m
-              - step:
-                  type: Container
-                  name: TF Show
-                  identifier: TF_Show
-                  spec:
-                    connectorRef: account.harnessImage
-                    image: hashicorp/terraform
-                    command: terraform show -json main-plan
-                    shell: Sh
-                    infrastructure:
-                      type: KubernetesDirect
-                      spec:
-                        connectorRef: kubernetesclusterscc
-                        namespace: harness-delegate-ng
-                        resources:
-                          limits:
-                            cpu: "0.5"
-                            memory: 500Mi
-                        annotations: {}
-                        labels: {}
-                        containerSecurityContext:
-                          capabilities:
-                            drop: []
-                            add: []
-                        nodeSelector: {}
-                    reports:
-                      type: JUnit
-                      spec:
-                        paths: []
-                    outputVariables: []
-                    envVariables: {}
-                  timeout: 10m
-        tags: {}
