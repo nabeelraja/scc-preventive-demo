@@ -18,10 +18,8 @@ resource "google_storage_bucket" "example_bucket" {
   location      = "EU"
   force_destroy = true
   project = "sec-scc-tst"
-  version_objects = "false"
-  # Genral way to enable versioning in gcs bucket
-  #versioning {
-  #  enabled = false
-  #}
+  versioning {
+    enabled = var.version_objects
+  }
   uniform_bucket_level_access = false
 }
