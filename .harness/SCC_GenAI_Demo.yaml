@@ -18,18 +18,22 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: true
-          platform:
-            os: Linux
-            arch: Amd64
-          runtime:
-            type: Docker
-            spec: {}
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: kubernetesclusterscc
+              namespace: harness-delegate-ng
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
           execution:
             steps:
               - step:
                   type: Run
-                  name: Run_1
-                  identifier: Run_1
+                  name: List all files
+                  identifier: List_all_files
                   spec:
+                    connectorRef: account.harnessImage
+                    image: hashicorp/terraform
                     shell: Sh
-                    command: ls -l
+                    command: ls -al
