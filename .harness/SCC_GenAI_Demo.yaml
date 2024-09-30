@@ -58,6 +58,20 @@ pipeline:
           execution:
             steps:
               - step:
+                  type: ShellScript
+                  name: List all files
+                  identifier: List_all_files
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: ls -al
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+              - step:
                   type: Container
                   name: TF Plan
                   identifier: TF_Plan
