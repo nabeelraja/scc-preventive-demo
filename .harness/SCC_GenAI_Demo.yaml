@@ -1,0 +1,35 @@
+pipeline:
+  name: SCC GenAI Demo
+  identifier: SCC_GenAI_Demo
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: githubconnectorpersonal
+        repoName: scc-preventive-demo
+        build: <+input>
+  stages:
+    - stage:
+        name: Checkout
+        identifier: Checkout
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: ls -l
